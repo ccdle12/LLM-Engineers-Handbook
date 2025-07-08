@@ -1,29 +1,24 @@
+# file: flake.nix
 {
-  description = "Python project with poetry2nix";
+  description = "Python application packaged using poetry2nix";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    poetry2nix.url = "github:nix-community/poetry2nix";
-    flake-utils.url = "github:numtide/flake-utils";
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
 
-  outputs = { self, nixpkgs, poetry2nix, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-        inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; })
-          mkPoetryEnv;
-
-        myPythonEnv = mkPoetryEnv {
-          projectDir = ./.;
-        };
-      in {
-        devShells.default = pkgs.mkShell {
-          buildInputs = [ myPythonEnv pkgs.poetry ];
-          shellHook = ''echo "🧪 Poetry dev shell ready."'';
-        };
-
-        packages.default = myPythonEnv;
-      }
-    );
+  outputs = { self, nixpkgs, poetry2nix }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+      # create a custom "mkPoetryApplication" API function that under the hood uses
+      # the packages and versions (python3, poetry etc.) from our pinned nixpkgs above:
+      inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
+      myPythonApp = mkPoetryApplication { projectDir = ./.; };
+    in
+    {
+      apps.${system}.default = {
+        type = "app";
+        # replace <script> with the name in the [tool.poetry.scripts] section of your pyproject.toml
+        program = "${myPythonApp}/bin/<script>";
+      };
+    };
 }

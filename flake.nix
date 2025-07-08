@@ -21,6 +21,7 @@
 
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; })
           mkPoetryEnv;
+        poetry2nixLib = poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
 
         # poetryEnv = poetry2nix.lib.mkPoetry2Nix {
           # inherit pkgs;
@@ -29,7 +30,7 @@
         myPythonEnv = mkPoetryEnv {
           projectDir = ./.;
           python = python;
-          overrides = poetryEnv.defaultPoetryOverrides.extend overrides;
+          overrides = poetry2nixLib.defaultPoetryOverrides.extend overrides;
         };
       in {
         devShells.default = pkgs.mkShell {

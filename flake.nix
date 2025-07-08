@@ -13,12 +13,23 @@
         pkgs = import nixpkgs { inherit system; };
         python = pkgs.python311;
 
+        overrides = self: super: {
+          pyarrow = super.pyarrow.overridePythonAttrs (old: {
+          buildInputs = (old.buildInputs or []) ++ [ pkgs.arrow-cpp_17 ]; # Force arrow-cpp version
+          });
+        };
+
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; })
           mkPoetryEnv;
+
+        poetryEnv = poetry2nix.lib.mkPoetry2Nix {
+          inherit pkgs;
+        };
 
         myPythonEnv = mkPoetryEnv {
           projectDir = ./.;
           python = python;
+          overrides = poetryEnv.defaultPoetryOverrides.extend overrides;
         };
       in {
         devShells.default = pkgs.mkShell {

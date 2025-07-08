@@ -22,9 +22,9 @@
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; })
           mkPoetryEnv;
 
-        poetryEnv = poetry2nix.lib.mkPoetry2Nix {
-          inherit pkgs;
-        };
+        # poetryEnv = poetry2nix.lib.mkPoetry2Nix {
+          # inherit pkgs;
+        # };
 
         myPythonEnv = mkPoetryEnv {
           projectDir = ./.;

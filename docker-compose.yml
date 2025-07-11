@@ -1,8 +1,25 @@
 services:
+  dev:
+    build:
+      context: .         # path to your Dockerfile
+      dockerfile: Dockerfile
+    container_name: dev
+    command: >
+      /bin/sh -c "poetry run poe local-zenml-server-up && tail -f /dev/null"
+    volumes:
+      - .:/app
+    ports:
+      - 8237:8237
+    working_dir: /app
+    tty: true
+    networks:
+      - devnet
+
   mongo:
     image: mongo:latest
     container_name: "llm_engineering_mongo"
     logging:
+      driver: json-file
       options:
         max-size: 1g
     environment:
@@ -13,7 +30,7 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
-      - local
+      - devnet
     restart: always
 
   qdrant:
@@ -28,7 +45,7 @@ services:
     volumes:
       - qdrant_data:/qdrant/storage
     networks:
-      - local
+      - devnet
     restart: always
 
 volumes:
@@ -36,5 +53,5 @@ volumes:
   qdrant_data:
 
 networks:
-  local:
+  devnet:
     driver: bridge

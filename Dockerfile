@@ -45,3 +45,5 @@ RUN poetry config virtualenvs.create false && \
 
 # Copy the rest of the code.
 COPY . $WORKSPACE_ROOT
+
+CMD ["tail", "-f", "/dev/null"]

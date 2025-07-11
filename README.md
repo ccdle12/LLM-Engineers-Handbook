@@ -14,6 +14,40 @@
   Find the book on <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">Amazon</a> or <a href="https://www.packtpub.com/en-us/product/llm-engineers-handbook-9781836200062">Packt</a>
 </p>
 
+## Fork Changes
+
+This fork makes the dev env run in a docker container called `dev`.
+
+Run all the containers:
+
+```sh
+sudo docker-compose up -d
+```
+
+Use the dev container for running pipelines and scripts.
+
+Exec into the dev container:
+
+```sh
+sudo docker exec -ti dev sh
+```
+
+Run one of the pipelines, e.g. the ETL pipeline:
+
+```
+poetry run poe run-digital-data-etl
+```
+
+View the pipeline run in ZenML:
+
+```sh
+127.0.0.1:8237
+```
+
+- Go the left panel click *Pipelines*
+- View `digital_data_etl`
+
+
 ## 🌟 Features
 
 The goal of this book is to create your own end-to-end LLM-based system using best practices:
@@ -71,10 +105,10 @@ Here is the directory overview:
 ├── code_snippets/       # Standalone example code
 ├── configs/             # Pipeline configuration files
 ├── llm_engineering/     # Core project package
-│   ├── application/    
-│   ├── domain/         
-│   ├── infrastructure/ 
-│   ├── model/         
+│   ├── application/
+│   ├── domain/
+│   ├── infrastructure/
+│   ├── model/
 ├── pipelines/           # ML pipeline definitions
 ├── steps/               # Pipeline components
 ├── tests/               # Test examples
@@ -121,10 +155,10 @@ Start by cloning the repository and navigating to the project directory:
 
 ```bash
 git clone https://github.com/PacktPublishing/LLM-Engineers-Handbook.git
-cd LLM-Engineers-Handbook 
+cd LLM-Engineers-Handbook
 ```
 
-Next, we have to prepare your Python environment and its adjacent dependencies. 
+Next, we have to prepare your Python environment and its adjacent dependencies.
 
 ### 2. Set Up Python Environment
 
@@ -165,7 +199,7 @@ python --version
 # Output: Python 3.11.8
 ```
 
-> [!NOTE]  
+> [!NOTE]
 > The project includes a `.python-version` file that automatically sets the correct Python version when you're in the project directory.
 
 ### 3. Install Dependencies
@@ -234,7 +268,7 @@ Now, let's configure our local project with all the necessary credentials and to
 
 ### 5. Local Development Setup
 
-After you have installed all the dependencies, you must create and fill a `.env` file with your credentials to appropriately interact with other services and run the project. Setting your sensitive credentials in a `.env` file is a good security practice, as this file won't be committed to GitHub or shared with anyone else. 
+After you have installed all the dependencies, you must create and fill a `.env` file with your credentials to appropriately interact with other services and run the project. Setting your sensitive credentials in a `.env` file is a good security practice, as this file won't be committed to GitHub or shared with anyone else.
 
 1. First, copy our example by running the following:
 
@@ -319,7 +353,7 @@ cat ~/.aws/credentials
 ```
 
 > [!IMPORTANT]
-> Additional configuration options are available in [settings.py](https://github.com/PacktPublishing/LLM-Engineers-Handbook/blob/main/llm_engineering/settings.py). Any variable in the `Settings` class can be configured through the `.env` file. 
+> Additional configuration options are available in [settings.py](https://github.com/PacktPublishing/LLM-Engineers-Handbook/blob/main/llm_engineering/settings.py). Any variable in the `Settings` class can be configured through the `.env` file.
 
 ## 🏗️ Infrastructure
 
@@ -340,7 +374,7 @@ Also, you can stop the ZenML server and all the Docker containers using the foll
 poetry poe local-infrastructure-down
 ```
 
-> [!WARNING]  
+> [!WARNING]
 > When running on MacOS, before starting the server, export the following environment variable:
 > `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`
 > Otherwise, the connection between the local server and pipeline will break. 🔗 More details in [this issue](https://github.com/zenml-io/zenml/issues/2369).
@@ -360,7 +394,7 @@ Dashboard URL: `localhost:8237`
 
 Default credentials:
   - `username`: default
-  - `password`: 
+  - `password`:
 
 → Find out more about using and setting up [ZenML](https://docs.zenml.io/).
 
@@ -415,7 +449,7 @@ To create the IAM execution role used by AWS SageMaker to access other AWS resou
 ```bash
 poetry poe create-sagemaker-execution-role
 ```
-It will create a `sagemaker_execution_role.json` file at the root of your repository with your new `AWS_ARN_ROLE` value. Add it to your `.env` file. 
+It will create a `sagemaker_execution_role.json` file at the root of your repository with your new `AWS_ARN_ROLE` value. Add it to your `.env` file.
 
 Once you've updated the `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, and `AWS_ARN_ROLE` values in your `.env` file, you can use AWS SageMaker. **Note that this step is crucial to complete the AWS setup.**
 
@@ -450,7 +484,7 @@ poetry poe delete-inference-endpoint
 
 #### AWS: ML pipelines, artifacts, and containers
 
-The ML pipelines, artifacts, and containers are deployed to AWS by leveraging ZenML's deployment features. Thus, you must create an account with ZenML Cloud and follow their guide on deploying a ZenML stack to AWS. Otherwise, we provide step-by-step instructions in **Chapter 11**, section **Deploying the LLM Twin's pipelines to the cloud** on what you must do.  
+The ML pipelines, artifacts, and containers are deployed to AWS by leveraging ZenML's deployment features. Thus, you must create an account with ZenML Cloud and follow their guide on deploying a ZenML stack to AWS. Otherwise, we provide step-by-step instructions in **Chapter 11**, section **Deploying the LLM Twin's pipelines to the cloud** on what you must do.
 
 #### Qdrant & MongoDB
 

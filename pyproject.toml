@@ -97,17 +97,14 @@ call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Conten
 
 # Infrastructure
 ## Local infrastructure
-local-docker-infrastructure-up = "docker compose up -d"
-local-docker-infrastructure-down = "docker compose stop"
+local-docker-infrastructure-up = "sudo docker compose up -d"
+local-docker-infrastructure-down = "sudo docker compose stop"
 local-zenml-server-down = "poetry run zenml logout --local"
 local-infrastructure-up = [
     "local-docker-infrastructure-up",
-    "local-zenml-server-down",
-    "local-zenml-server-up",
 ]
 local-infrastructure-down = [
     "local-docker-infrastructure-down",
-    "local-zenml-server-down",
 ]
 set-local-stack = "poetry run zenml stack set default"
 set-aws-stack = "poetry run zenml stack set aws-stack"
@@ -151,7 +148,7 @@ case = "win32"
 cmd = "poetry run zenml login --local --blocking"
 
 [[tool.poe.tasks.local-zenml-server-up.switch]]
-cmd = "poetry run zenml login --local"
+cmd = "poetry run zenml login --local --ip-address 0.0.0.0"
 
 # Tests
 [tool.poe.tasks.test]
